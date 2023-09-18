@@ -5,7 +5,7 @@
         v-for="(rowItem, columnIndex) in row"
         :key="columnIndex + '-column'"
       >
-        <div>{{ rowItem }}</div>
+        <div class="board-box">{{ rowItem === 0 ? "" : rowItem }}</div>
       </template>
     </template>
   </section>
@@ -27,6 +27,12 @@ export default {
   display: grid;
   grid-template-rows: repeat(9, 1fr);
   grid-template-columns: repeat(9, 1fr);
-  gap: 1rem;
+  gap: 0.25rem;
+
+  .board-box {
+    background: wheat;
+    padding: 0.75rem;
+    color: black;
+  }
 }
 </style>

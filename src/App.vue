@@ -19,6 +19,7 @@ export default {
     return {
       boardSize: 9,
       board: [],
+      maxToFill: 0,
     };
   },
 
@@ -31,23 +32,78 @@ export default {
         .map(() => new Array(this.boardSize).fill(0));
 
       this.board = newBoard;
-      this.fillDiagonalRegions();
+      this.autoFillBoard();
     },
 
-    fillDiagonalRegions() {
-      for (let i = 0; i < this.boardSize; i += 3) {
-        this.fillRegion(i, i);
+    autoFillBoard() {
+      for (
+        let columnIndex = 0;
+        columnIndex < this.boardSize;
+        columnIndex += 3
+      ) {
+        for (let rowIndex = 0; rowIndex < this.boardSize; rowIndex += 3) {
+          this.fillRegion(rowIndex, columnIndex);
+        }
       }
     },
 
     fillRegion(rowStart, colStart) {
       const numbers = this.shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+      //Randomly, assign a max quantity of number to be filled in this region
+      const maxToFill = 5;
+      let filledCount = 0;
+
       let index = 0;
-      for (let i = rowStart; i < rowStart + 3; i++) {
-        for (let j = colStart; j < colStart + 3; j++) {
-          this.board[i][j] = numbers[index++];
+
+      for (let row = rowStart; row < rowStart + 3; row++) {
+        for (let col = colStart; col < colStart + 3; col++) {
+          const num = numbers[index];
+          const randomBoolean = Math.random() < 0.75;
+
+          if (
+            this.isAllowed({ num, row, col }) &&
+            filledCount < maxToFill &&
+            randomBoolean
+          ) {
+            this.board[row][col] = num;
+            filledCount++;
+          }
+
+          index++;
         }
       }
+    },
+
+    isAllowed({ num, row, col }) {
+      return (
+        this.isSafeInRow(num, row) &&
+        this.isSafeInColumn(num, col) &&
+        this.isSafeInRegion(
+          num,
+          Math.floor(row / 3) * 3,
+          Math.floor(col / 3) * 3
+        )
+      );
+    },
+
+    isSafeInRow(num, row) {
+      return !this.board[row].includes(num);
+    },
+
+    isSafeInColumn(num, col) {
+      return !this.board.some((row) => row[col] === num);
+    },
+
+    isSafeInRegion(num, rowStart, colStart) {
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (this.board[rowStart + i][colStart + j] === num) {
+            return false;
+          }
+        }
+      }
+      return true;
     },
 
     // Paso 5: Función para mezclar un arreglo aleatoriamente

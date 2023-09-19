@@ -1,15 +1,19 @@
 <template>
   <section id="board">
-    <template v-for="(row, rowIndex) in board" :key="rowIndex + '-row'">
+    <template v-for="(row, rowIndex) in gameBoard" :key="rowIndex + '-row'">
       <template
-        v-for="(rowItem, columnIndex) in row"
-        :key="columnIndex + '-column'"
+        v-for="(num, columnIndex) in row"
+        :key="rowIndex + 'row-' + columnIndex + '-column'"
       >
-        <input
-          class="board-box"
-          :class="getClass(rowIndex, columnIndex)"
-          :value="rowItem ? rowItem : ''"
-          type="number"
+        <BoardCell
+          :gameBoard="gameBoard"
+          :initialBoard="initialBoard"
+          :solvedBoard="solvedBoard"
+          :num="num"
+          :row="row"
+          :rowIndex="rowIndex"
+          :columnIndex="columnIndex"
+          @boardInput="(data) => $emit('boardInput', data)"
         />
       </template>
     </template>
@@ -17,21 +21,19 @@
 </template>
 
 <script>
+import BoardCell from "@components/Board/BoardCell.vue";
 export default {
   name: "Board",
+  components: { BoardCell },
   props: {
-    board: {
+    gameBoard: {
       type: Array,
     },
-  },
-  methods: {
-    getClass(row, column) {
-      return {
-        "b-top": row === 0,
-        "b-bottom": row === 2 || row === 5 || row === 8,
-        "b-left": column == 0,
-        "b-right": column == 2 || column == 5 || column == 8,
-      };
+    initialBoard: {
+      type: Array,
+    },
+    solvedBoard: {
+      type: Array,
     },
   },
 };
@@ -51,10 +53,14 @@ export default {
     border-collapse: collapse;
     background: wheat;
     padding: 0.75rem;
-    color: black;
+    color: grey;
     text-align: center;
     height: 100%;
     width: 100%;
+
+    &.disabled {
+      color: black;
+    }
 
     &.b-top {
       border-top: 2px solid black;

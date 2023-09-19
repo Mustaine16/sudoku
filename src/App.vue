@@ -1,12 +1,18 @@
 <template>
   <main>
-    <Board :board="gameBoard" />
+    <Board
+      :gameBoard="gameBoard"
+      :initialBoard="initialBoard"
+      :solvedBoard="solvedBoard"
+      @boardInput="handleInput"
+    />
     <UserControls />
     <button @click="initGame">FILL</button>
   </main>
 </template>
 
 <script>
+import { cloneDeep } from "lodash";
 import Board from "@components/Board/Board.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
 
@@ -20,6 +26,7 @@ export default {
     return {
       boardSize: 9,
       solvedBoard: [],
+      initialBoard: [],
       gameBoard: [],
       maxToFill: 0,
       currentFocus: [0, 0],
@@ -63,7 +70,7 @@ export default {
     },
 
     setGameBoard() {
-      const newBoard = [...this.solvedBoard];
+      const newBoard = cloneDeep(this.solvedBoard);
 
       let numsToDelete = 45;
 
@@ -80,7 +87,8 @@ export default {
         }
       }
 
-      this.gameBoard = newBoard;
+      this.gameBoard = cloneDeep(newBoard);
+      this.initialBoard = cloneDeep(newBoard);
     },
 
     isAllowed({ board, num, row, col }) {
@@ -120,10 +128,22 @@ export default {
       }
       return array;
     },
+
+    handleInput({ num, row, col }) {
+      console.log({ num, row, col });
+      this.gameBoard[row][col] = Number(num);
+      this.gameBoard = this.gameBoard;
+    },
   },
 
   mounted() {
     this.initGame();
+  },
+
+  watch: {
+    gameBoard() {
+      console.log(this.gameBoard);
+    },
   },
 };
 </script>

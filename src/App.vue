@@ -4,7 +4,10 @@
       :gameBoard="gameBoard"
       :initialBoard="initialBoard"
       :solvedBoard="solvedBoard"
+      :activeCell="activeCell"
       @boardInput="handleInput"
+      @clearCell="handleClearCell"
+      @setActiveCell="handleSetActiveCell"
     />
     <UserControls />
     <button @click="initGame">FILL</button>
@@ -13,6 +16,7 @@
 
 <script>
 import { cloneDeep } from "lodash";
+import { getRegionStartAndEnd } from "./utils/index.js";
 import Board from "@components/Board/Board.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
 
@@ -29,7 +33,7 @@ export default {
       initialBoard: [],
       gameBoard: [],
       maxToFill: 0,
-      currentFocus: [0, 0],
+      activeCell: {},
     };
   },
 
@@ -109,10 +113,10 @@ export default {
 
     isAllowedInRegion({ board, num, row, col }) {
       //Check if the num is not present in the 3x3 box
-      const rowStart = 3 * Math.floor(row / 3);
-      const rowEnd = rowStart + 2;
-      const colStart = 3 * Math.floor(col / 3);
-      const colEnd = colStart + 2;
+      const { rowStart, rowEnd, colStart, colEnd } = getRegionStartAndEnd({
+        row,
+        col,
+      });
 
       const numsInRegion = board
         .slice(rowStart, rowEnd + 1)
@@ -132,7 +136,16 @@ export default {
     handleInput({ num, row, col }) {
       console.log({ num, row, col });
       this.gameBoard[row][col] = Number(num);
-      this.gameBoard = this.gameBoard;
+      // this.gameBoard = this.gameBoard;
+    },
+
+    handleClearCell({ row, col }) {
+      this.gameBoard[row][col] = 0;
+    },
+
+    handleSetActiveCell({ row, col, num }) {
+      console.log({ row, col, num });
+      this.activeCell = { row, col, num };
     },
   },
 

@@ -6,6 +6,7 @@
         :key="rowIndex + 'row-' + columnIndex + '-column'"
       >
         <BoardCell
+          :activeCell="activeCell"
           :gameBoard="gameBoard"
           :initialBoard="initialBoard"
           :solvedBoard="solvedBoard"
@@ -14,6 +15,12 @@
           :rowIndex="rowIndex"
           :columnIndex="columnIndex"
           @boardInput="(data) => $emit('boardInput', data)"
+          @clearCell="
+            () => $emit('clearCell', { row: rowIndex, col: columnIndex })
+          "
+          @setActiveCell="
+            $emit('setActiveCell', { row: rowIndex, col: columnIndex, num })
+          "
         />
       </template>
     </template>
@@ -35,6 +42,9 @@ export default {
     solvedBoard: {
       type: Array,
     },
+    activeCell: {
+      type: Object,
+    },
   },
 };
 </script>
@@ -47,44 +57,5 @@ export default {
   place-items: center;
   width: 450px;
   height: 500px;
-
-  .board-box {
-    border: 1px solid grey;
-    border-collapse: collapse;
-    background: wheat;
-    padding: 0.75rem;
-    color: grey;
-    text-align: center;
-    height: 100%;
-    width: 100%;
-
-    &.disabled {
-      color: black;
-    }
-
-    &.b-top {
-      border-top: 2px solid black;
-    }
-    &.b-bottom {
-      border-bottom: 2px solid black;
-    }
-    &.b-left {
-      border-left: 2px solid black;
-    }
-    &.b-right {
-      border-right: 2px solid black;
-    }
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    /* Firefox */
-    &[type="number"] {
-      -moz-appearance: textfield;
-    }
-  }
 }
 </style>

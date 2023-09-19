@@ -6,7 +6,7 @@
       @input="
         (e) => {
           e.preventDefault();
-          handleInput(e.target.value);
+          handleInput(e.data);
         }
       "
       @keyup.delete="handleClear"
@@ -38,6 +38,8 @@ export default {
         "in-row": this.isInActiveRow,
         "in-column": this.isInActiveColumn,
         "in-region": this.isInRegion,
+        "is-correct": this.isCorrect,
+        "is-wrong": this.isWrong,
         "is-equal": this.isEqualAsSelected,
         "b-top": this.rowIndex === 0,
         "b-bottom":
@@ -47,7 +49,7 @@ export default {
           this.columnIndex == 2 ||
           this.columnIndex == 5 ||
           this.columnIndex == 8,
-        disabled: !!this.initialBoard?.[this.rowIndex]?.[this.columnIndex],
+        disabled: this.isDisabled,
       };
     },
 
@@ -70,6 +72,10 @@ export default {
       return this.num && this.num === this.activeCell.num;
     },
 
+    isDisabled() {
+      return !!this.initialBoard?.[this.rowIndex]?.[this.columnIndex];
+    },
+
     isInRegion() {
       const { rowStart, rowEnd, colStart, colEnd } = getRegionStartAndEnd({
         row: this.activeCell.row,
@@ -85,31 +91,35 @@ export default {
     },
 
     isCorrect() {
-      const correctCell = this.solvedBoard?.[this.rowIndex]?.[columnIndex];
-      return this.num === correctCell;
+      const correctCell = this.solvedBoard?.[this.rowIndex]?.[this.columnIndex];
+      return this.num === correctCell && !this.isDisabled;
     },
 
     isWrong() {
-      return !this.isCorrect;
+      return this.num && !this.isDisabled && !this.isCorrect;
     },
   },
   methods: {
     handleInput(num) {
       const invalidChars = ["-", "+", "e"];
-      const isEmpty = !this.gameBoard[this.rowIndex][this.columnIndex];
-      console.log({ isEmpty });
+
       if (invalidChars.some((c) => c === num)) {
         return false;
-      } else if (isEmpty) {
+      } else {
         this.$emit("boardInput", {
           num,
           row: this.rowIndex,
           col: this.columnIndex,
         });
+
+        this.$nextTick(() => {
+          this.$emit("setActiveCell");
+        });
       }
     },
     handleClear() {
       this.$emit("clearCell");
+      this.$emit("setActiveCell");
     },
   },
 };
@@ -125,7 +135,7 @@ export default {
   padding: 0.75rem;
   position: relative;
   text-align: center;
-  transition: all 0.2s;
+  transition: background ease-out 0.1s;
   height: 100%;
   width: 100%;
 
@@ -157,7 +167,7 @@ export default {
   &.is-correct {
     color: rgb(7, 7, 208);
   }
-  &.is-correct {
+  &.is-wrong {
     color: rgb(186, 12, 12);
     background: red;
   }

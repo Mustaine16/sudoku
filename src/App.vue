@@ -134,9 +134,7 @@ export default {
     },
 
     handleInput({ num, row, col }) {
-      console.log({ num, row, col });
       this.gameBoard[row][col] = Number(num);
-      // this.gameBoard = this.gameBoard;
     },
 
     handleClearCell({ row, col }) {
@@ -144,19 +142,12 @@ export default {
     },
 
     handleSetActiveCell({ row, col, num }) {
-      console.log({ row, col, num });
       this.activeCell = { row, col, num };
     },
   },
 
   mounted() {
     this.initGame();
-  },
-
-  watch: {
-    gameBoard() {
-      console.log(this.gameBoard);
-    },
   },
 };
 </script>

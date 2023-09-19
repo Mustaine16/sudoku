@@ -1,7 +1,8 @@
 <template>
   <main>
-    <Board :board="board" />
+    <Board :board="solvedBoard" />
     <UserControls />
+    <button @click="initSolvedBoard">FILL</button>
   </main>
 </template>
 
@@ -18,95 +19,74 @@ export default {
   data() {
     return {
       boardSize: 9,
-      board: [],
+      solvedBoard: [],
       maxToFill: 0,
+      currentFocus: [0, 0],
     };
   },
 
   methods: {
-    initBoard() {
-      // Paso 1: Generate an empty 9x9 board
+    initSolvedBoard() {
+      do {
+        const newBoard = new Array(this.boardSize)
+          .fill(null)
+          .map(() => new Array(this.boardSize).fill(0));
 
-      const newBoard = new Array(this.boardSize)
-        .fill(null)
-        .map(() => new Array(this.boardSize).fill(0));
+        for (let rowIndex = 0; rowIndex < this.boardSize; rowIndex++) {
+          const numbers = this.shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-      this.board = newBoard;
-      this.autoFillBoard();
-    },
-
-    autoFillBoard() {
-      for (
-        let columnIndex = 0;
-        columnIndex < this.boardSize;
-        columnIndex += 3
-      ) {
-        for (let rowIndex = 0; rowIndex < this.boardSize; rowIndex += 3) {
-          this.fillRegion(rowIndex, columnIndex);
-        }
-      }
-    },
-
-    fillRegion(rowStart, colStart) {
-      const numbers = this.shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-
-      //Randomly, assign a max quantity of number to be filled in this region
-      const maxToFill = 5;
-      let filledCount = 0;
-
-      let index = 0;
-
-      for (let row = rowStart; row < rowStart + 3; row++) {
-        for (let col = colStart; col < colStart + 3; col++) {
-          const num = numbers[index];
-          const randomBoolean = Math.random() < 0.75;
-
-          if (
-            this.isAllowed({ num, row, col }) &&
-            filledCount < maxToFill &&
-            randomBoolean
+          for (
+            let columnIndex = 0;
+            columnIndex < this.boardSize;
+            columnIndex++
           ) {
-            this.board[row][col] = num;
-            filledCount++;
-          }
+            const numFind = numbers.find((num) => {
+              return this.isAllowed({
+                board: newBoard,
+                num,
+                row: rowIndex,
+                col: columnIndex,
+              });
+            });
 
-          index++;
+            newBoard[rowIndex][columnIndex] = numFind;
+          }
         }
-      }
+
+        this.solvedBoard = newBoard;
+      } while (!this.solvedBoard.every((row) => row.every((num) => !!num)));
     },
 
-    isAllowed({ num, row, col }) {
+    isAllowed({ board, num, row, col }) {
       return (
-        this.isSafeInRow(num, row) &&
-        this.isSafeInColumn(num, col) &&
-        this.isSafeInRegion(
-          num,
-          Math.floor(row / 3) * 3,
-          Math.floor(col / 3) * 3
-        )
+        this.isAllowedInRow({ board, num, row }) &&
+        this.isAllowedInColumn({ board, num, col }) &&
+        this.isAllowedInRegion({ board, num, row, col })
       );
     },
 
-    isSafeInRow(num, row) {
-      return !this.board[row].includes(num);
+    isAllowedInRow({ board, num, row }) {
+      return !board[row].includes(num);
     },
 
-    isSafeInColumn(num, col) {
-      return !this.board.some((row) => row[col] === num);
+    isAllowedInColumn({ board, num, col }) {
+      return !board.some((row) => row[col] === num);
     },
 
-    isSafeInRegion(num, rowStart, colStart) {
-      for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-          if (this.board[rowStart + i][colStart + j] === num) {
-            return false;
-          }
-        }
-      }
-      return true;
+    isAllowedInRegion({ board, num, row, col }) {
+      //Check if the num is not present in the 3x3 box
+      const rowStart = 3 * Math.floor(row / 3);
+      const rowEnd = rowStart + 2;
+      const colStart = 3 * Math.floor(col / 3);
+      const colEnd = colStart + 2;
+
+      const numsInRegion = board
+        .slice(rowStart, rowEnd + 1)
+        .flatMap((row) => row.slice(colStart, colEnd + 1));
+
+      return !numsInRegion.some((n) => n === num);
     },
 
-    // Paso 5: Función para mezclar un arreglo aleatoriamente
     shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -117,7 +97,8 @@ export default {
   },
 
   mounted() {
-    this.initBoard();
+    this.initSolvedBoard();
+    // this.setGameBoard();
   },
 };
 </script>

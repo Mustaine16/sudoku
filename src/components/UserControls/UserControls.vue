@@ -28,8 +28,8 @@ export default {
 <style lang="scss" scoped>
 #number-buttons-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 50px);
+  grid-template-rows: repeat(3, 50px);
   grid-gap: 0.1rem;
 }
 </style>

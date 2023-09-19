@@ -1,8 +1,8 @@
 <template>
   <main>
-    <Board :board="solvedBoard" />
+    <Board :board="gameBoard" />
     <UserControls />
-    <button @click="initSolvedBoard">FILL</button>
+    <button @click="initGame">FILL</button>
   </main>
 </template>
 
@@ -20,12 +20,17 @@ export default {
     return {
       boardSize: 9,
       solvedBoard: [],
+      gameBoard: [],
       maxToFill: 0,
       currentFocus: [0, 0],
     };
   },
 
   methods: {
+    initGame() {
+      this.initSolvedBoard();
+      this.setGameBoard();
+    },
     initSolvedBoard() {
       do {
         const newBoard = new Array(this.boardSize)
@@ -55,6 +60,27 @@ export default {
 
         this.solvedBoard = newBoard;
       } while (!this.solvedBoard.every((row) => row.every((num) => !!num)));
+    },
+
+    setGameBoard() {
+      const newBoard = [...this.solvedBoard];
+
+      let numsToDelete = 45;
+
+      for (let rowIndex = 0; rowIndex < newBoard.length; rowIndex++) {
+        const row = newBoard[rowIndex];
+
+        for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
+          const randomBoolean = Math.random() >= 0.5;
+
+          if (randomBoolean && numsToDelete) {
+            newBoard[rowIndex][columnIndex] = 0;
+            numsToDelete--;
+          }
+        }
+      }
+
+      this.gameBoard = newBoard;
     },
 
     isAllowed({ board, num, row, col }) {
@@ -97,8 +123,7 @@ export default {
   },
 
   mounted() {
-    this.initSolvedBoard();
-    // this.setGameBoard();
+    this.initGame();
   },
 };
 </script>

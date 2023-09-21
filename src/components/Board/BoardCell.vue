@@ -41,6 +41,7 @@ export default {
         "is-correct": this.isCorrect,
         "is-wrong": this.isWrong,
         "is-equal": this.isEqualAsSelected,
+
         "b-top": this.rowIndex === 0,
         "b-bottom":
           this.rowIndex === 2 || this.rowIndex === 5 || this.rowIndex === 8,
@@ -49,6 +50,11 @@ export default {
           this.columnIndex == 2 ||
           this.columnIndex == 5 ||
           this.columnIndex == 8,
+
+        "c-top-left": this.rowIndex === 0 && this.columnIndex === 0,
+        "c-top-right": this.rowIndex === 0 && this.columnIndex === 8,
+        "c-bottom-left": this.rowIndex === 8 && this.columnIndex === 0,
+        "c-bottom-right": this.rowIndex === 8 && this.columnIndex === 8,
         disabled: this.isDisabled,
       };
     },
@@ -103,7 +109,7 @@ export default {
     handleInput(num) {
       const invalidChars = ["-", "+", "e"];
 
-      if (invalidChars.some((c) => c === num)) {
+      if (invalidChars.some((c) => c === num) || this.isDisabled) {
         return false;
       } else {
         this.$emit("boardInput", {
@@ -127,15 +133,19 @@ export default {
 
 <style lang="scss" scoped>
 .board-box {
-  border: 1px solid grey;
+  border: 1px solid #7e7f9a;
   border-collapse: collapse;
-  background: wheat;
+  background: #232c33;
   cursor: default;
   color: grey;
-  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  padding: 0.5rem;
   position: relative;
   text-align: center;
-  transition: background ease-out 0.1s;
+  transition: background ease-out 0.075s;
   height: 100%;
   width: 100%;
 
@@ -152,37 +162,50 @@ export default {
   &.in-row,
   &.in-column,
   &.in-region {
-    background: rgb(176, 176, 245);
+    background: #080808;
   }
   &.is-equal {
-    background: rgb(92, 92, 217);
+    background: #626c79;
   }
   &.active {
-    background: rgb(62, 62, 186);
+    background: #597495;
   }
   &.disabled {
-    color: black;
+    color: white;
   }
 
   &.is-correct {
-    color: rgb(7, 7, 208);
+    color: #5dd39e;
   }
   &.is-wrong {
-    color: rgb(186, 12, 12);
-    background: red;
+    color: #c84630;
+    background: #d4a0a7;
   }
 
   &.b-top {
-    border-top: 2px solid black;
+    border-top: 2px solid #eaeaea;
   }
   &.b-bottom {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid #eaeaea;
   }
   &.b-left {
-    border-left: 2px solid black;
+    border-left: 2px solid #eaeaea;
   }
   &.b-right {
-    border-right: 2px solid black;
+    border-right: 2px solid #eaeaea;
+  }
+
+  &.c-top-left {
+    border-radius: 5px 0 0 0;
+  }
+  &.c-top-right {
+    border-radius: 0 5px 0 0;
+  }
+  &.c-bottom-left {
+    border-radius: 0 0 0 5px;
+  }
+  &.c-bottom-right {
+    border-radius: 0 0 5px 0;
   }
 
   &::-webkit-outer-spin-button,

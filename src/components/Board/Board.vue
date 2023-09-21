@@ -55,7 +55,7 @@ export default {
   grid-template-rows: repeat(9, 1fr);
   grid-template-columns: repeat(9, 1fr);
   place-items: center;
-  width: 450px;
+  width: 500px;
   height: 500px;
 }
 </style>

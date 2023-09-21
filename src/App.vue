@@ -9,8 +9,7 @@
       @clearCell="handleClearCell"
       @setActiveCell="handleSetActiveCell"
     />
-    <UserControls />
-    <button @click="initGame">FILL</button>
+    <UserControls @initGame="initGame" />
   </main>
 </template>
 
@@ -76,7 +75,7 @@ export default {
     setGameBoard() {
       const newBoard = cloneDeep(this.solvedBoard);
 
-      let numsToDelete = 45;
+      let numsToDelete = 60;
 
       for (let rowIndex = 0; rowIndex < newBoard.length; rowIndex++) {
         const row = newBoard[rowIndex];

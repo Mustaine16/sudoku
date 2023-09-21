@@ -1,5 +1,6 @@
 <template>
   <main>
+    <!-- <GameBar /> -->
     <span>ERRORS: {{ errorsCount }} / {{ MAX_ERRORS }}</span>
     <Board
       :gameBoard="gameBoard"
@@ -21,10 +22,12 @@ import { getRegionStartAndEnd } from "./utils/index.js";
 import CONSTANTS from "./utils/constants.js";
 import Board from "@components/Board/Board.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
+import GameBar from "@components/GameBar/GameBar.vue";
 
 export default {
   components: {
     Board,
+    GameBar,
     UserControls,
   },
 
@@ -33,12 +36,23 @@ export default {
       activeCell: {},
       errorsCount: 0,
       initialBoard: [],
-      gameBoard: [],
+      GameBoard: [],
       maxToFill: 0,
       solvedBoard: [],
       MAX_ERRORS: CONSTANTS.MAX_ERRORS,
       BOARD_SIZE: CONSTANTS.BOARD_SIZE,
     };
+  },
+
+  computed: {
+    gameIsSolved() {
+      return this.solvedBoard.every((solvedRow, rowIndex) =>
+        solvedRow.every(
+          (solvedCell, solvedCellIndex) =>
+            solvedCell === this.gameBoard[rowIndex][solvedCellIndex]
+        )
+      );
+    },
   },
 
   methods: {
@@ -147,7 +161,7 @@ export default {
     },
 
     handleSetActiveCell({ row, col, num }) {
-      this.activeCell = { row, col, num };
+      this.activeCell = { row, col, num: Number(num) };
     },
 
     addErrorCount() {
@@ -158,6 +172,14 @@ export default {
 
   mounted() {
     this.initGame();
+  },
+
+  watch: {
+    gameIsSolved(isSolved) {
+      if (isSolved) {
+        alert("Te amo mi amor ❣️");
+      }
+    },
   },
 };
 </script>

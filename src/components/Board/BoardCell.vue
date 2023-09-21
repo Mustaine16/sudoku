@@ -5,8 +5,7 @@
       :value="num ? num : ''"
       @input="
         (e) => {
-          e.preventDefault();
-          handleInput(e.data);
+          handleInput(e);
         }
       "
       @keyup.delete="handleClear"
@@ -106,7 +105,9 @@ export default {
     },
   },
   methods: {
-    handleInput(num) {
+    handleInput(e) {
+      e.preventDefault();
+      const num = e.data;
       const invalidChars = ["-", "+", "e"];
 
       if (invalidChars.some((c) => c === num) || this.isDisabled) {
@@ -119,7 +120,7 @@ export default {
         });
 
         this.$nextTick(() => {
-          this.$emit("setActiveCell");
+          this.$emit("setActiveCell", num);
           if (this.isWrong) {
             this.$emit("cellError");
           }

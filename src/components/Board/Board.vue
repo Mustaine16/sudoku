@@ -19,7 +19,12 @@
             () => $emit('clearCell', { row: rowIndex, col: columnIndex })
           "
           @setActiveCell="
-            $emit('setActiveCell', { row: rowIndex, col: columnIndex, num })
+            (numFromInput) =>
+              $emit('setActiveCell', {
+                row: rowIndex,
+                col: columnIndex,
+                num: numFromInput || num,
+              })
           "
           @cellError="$emit('cellError')"
         />

@@ -120,6 +120,9 @@ export default {
 
         this.$nextTick(() => {
           this.$emit("setActiveCell");
+          if (this.isWrong) {
+            this.$emit("cellError");
+          }
         });
       }
     },
@@ -133,7 +136,7 @@ export default {
 
 <style lang="scss" scoped>
 .board-box {
-  border: 1px solid #7e7f9a;
+  border: 1px solid #3d3d43;
   border-collapse: collapse;
   background: #232c33;
   cursor: default;

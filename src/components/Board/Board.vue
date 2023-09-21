@@ -21,6 +21,7 @@
           @setActiveCell="
             $emit('setActiveCell', { row: rowIndex, col: columnIndex, num })
           "
+          @cellError="$emit('cellError')"
         />
       </template>
     </template>

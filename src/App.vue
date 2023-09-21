@@ -1,5 +1,6 @@
 <template>
   <main>
+    <span>ERRORS: {{ errorsCount }} / {{ MAX_ERRORS }}</span>
     <Board
       :gameBoard="gameBoard"
       :initialBoard="initialBoard"
@@ -8,6 +9,7 @@
       @boardInput="handleInput"
       @clearCell="handleClearCell"
       @setActiveCell="handleSetActiveCell"
+      @cellError="addErrorCount"
     />
     <UserControls @initGame="initGame" />
   </main>
@@ -16,6 +18,7 @@
 <script>
 import { cloneDeep } from "lodash";
 import { getRegionStartAndEnd } from "./utils/index.js";
+import CONSTANTS from "./utils/constants.js";
 import Board from "@components/Board/Board.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
 
@@ -27,32 +30,35 @@ export default {
 
   data() {
     return {
-      boardSize: 9,
-      solvedBoard: [],
+      activeCell: {},
+      errorsCount: 0,
       initialBoard: [],
       gameBoard: [],
       maxToFill: 0,
-      activeCell: {},
+      solvedBoard: [],
+      MAX_ERRORS: CONSTANTS.MAX_ERRORS,
+      BOARD_SIZE: CONSTANTS.BOARD_SIZE,
     };
   },
 
   methods: {
     initGame() {
+      this.errorsCount = 0;
       this.initSolvedBoard();
       this.setGameBoard();
     },
     initSolvedBoard() {
       do {
-        const newBoard = new Array(this.boardSize)
+        const newBoard = new Array(this.BOARD_SIZE)
           .fill(null)
-          .map(() => new Array(this.boardSize).fill(0));
+          .map(() => new Array(this.BOARD_SIZE).fill(0));
 
-        for (let rowIndex = 0; rowIndex < this.boardSize; rowIndex++) {
+        for (let rowIndex = 0; rowIndex < this.BOARD_SIZE; rowIndex++) {
           const numbers = this.shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
           for (
             let columnIndex = 0;
-            columnIndex < this.boardSize;
+            columnIndex < this.BOARD_SIZE;
             columnIndex++
           ) {
             const numFind = numbers.find((num) => {
@@ -142,6 +148,11 @@ export default {
 
     handleSetActiveCell({ row, col, num }) {
       this.activeCell = { row, col, num };
+    },
+
+    addErrorCount() {
+      console.log("E");
+      this.errorsCount = this.errorsCount + 1;
     },
   },
 

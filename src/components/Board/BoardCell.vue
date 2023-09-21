@@ -131,6 +131,14 @@ export default {
       this.$emit("setActiveCell");
     },
   },
+
+  watch: {
+    isWrong(isWrong) {
+      if (isWrong) {
+        this.$emit("cellError");
+      }
+    },
+  },
 };
 </script>
 

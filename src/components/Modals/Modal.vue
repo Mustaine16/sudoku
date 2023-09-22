@@ -83,23 +83,22 @@ export default {
           &:hover {
             background: #b9361f;
           }
-          &:focus,
-          &:focus-visible,
+
           &:active {
-            background:#882f1f;
+            background: #882f1f;
           }
+          
         }
         &#new-game {
-          background: #5dd39e;
+          background: #38b77d;
           color: white;
 
           &:hover {
-            background: #40d190;
+            background: #34996c;
           }
-          &:focus,
-          &:focus-visible,
+
           &:active {
-            background:#269965;
+            background: #207750;
           }
         }
       }

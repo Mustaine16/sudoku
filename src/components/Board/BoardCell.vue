@@ -132,15 +132,19 @@ export default {
 
         this.$nextTick(() => {
           this.$emit("setActiveCell", num);
-          if (this.isWrong) {
-            this.$emit("cellError");
-          }
         });
       }
     },
     handleClear() {
       this.$emit("clearCell");
       this.$emit("setActiveCell");
+    },
+  },
+  watch: {
+    num() {
+      if (this.isWrong) {
+        this.$emit("cellError");
+      }
     },
   },
 };

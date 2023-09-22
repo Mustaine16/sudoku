@@ -54,7 +54,7 @@ import GameBar from "@components/GameBar/GameBar.vue";
 import CongratsModal from "@components/Modals/CongratsModal.vue";
 import ErrorModal from "@components/Modals/ErrorModal.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
-const NUMS_TO_DELETE = 1;
+const NUMS_TO_DELETE = 60;
 
 export default {
   components: {

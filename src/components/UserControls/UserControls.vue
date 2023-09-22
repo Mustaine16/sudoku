@@ -55,6 +55,17 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #070707;
+        color: white;
+      }
+
+      &:active {
+        background: #d6d6d6;
+        color: black;
+      }
     }
   }
 
@@ -62,6 +73,16 @@ export default {
     background: #eaeaea;
     color: black;
     font-size: 1.5rem;
+
+    &:hover {
+      background: #070707;
+      color: white;
+    }
+
+    &:active {
+      background: #5dd39e;
+      color: white;
+    }
   }
 }
 </style>

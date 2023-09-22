@@ -8,6 +8,7 @@ export default {
 
   props: {
     formattedTime: { type: String },
+    hasUserLost: { type: Boolean },
     isGameSolved: { type: Boolean },
     time: { type: Number },
   },
@@ -39,6 +40,9 @@ export default {
     isGameSolved(isSolved) {
       if (isSolved) {
         clearInterval(this.interval);
+      } else if (!this.interval) {
+        //Restart the game
+        this.toggleTimer();
       }
     },
   },

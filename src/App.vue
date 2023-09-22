@@ -1,28 +1,44 @@
 <template>
   <main>
-    <GameBar
-      :errorsCount="errorsCount"
-      :formattedTime="formattedTime"
-      :isGameSolved="isGameSolved"
-      :MAX_ERRORS="MAX_ERRORS"
-      :time="time"
-      @incrementTime="incrementTime"
-    />
-    <Board
-      :gameBoard="gameBoard"
-      :initialBoard="initialBoard"
-      :solvedBoard="solvedBoard"
-      :activeCell="activeCell"
-      @boardInput="handleInput"
-      @clearCell="handleClearCell"
-      @setActiveCell="handleSetActiveCell"
-      @cellError="addErrorCount"
-    />
+    <section id="game-section">
+      <GameBar
+        :errorsCount="errorsCount"
+        :formattedTime="formattedTime"
+        :hasUserLost="hasUserLost"
+        :isGameSolved="isGameSolved"
+        :MAX_ERRORS="MAX_ERRORS"
+        :time="time"
+        @incrementTime="incrementTime"
+      />
+      <Board
+        :gameBoard="gameBoard"
+        :initialBoard="initialBoard"
+        :solvedBoard="solvedBoard"
+        :activeCell="activeCell"
+        @boardInput="handleInput"
+        @clearCell="handleClearCell"
+        @setActiveCell="handleSetActiveCell"
+        @cellError="addErrorCount"
+      />
+    </section>
     <UserControls @initGame="initGame" @numPadInput="handleNumPadInput" />
+
     <Teleport to="body">
-      <Modal
-        :show="showModal"
+      <CongratsModal
+        :show="showModal && isGameSolved"
+        :time="formattedTime"
         @close="showModal = false"
+        @restartGame="restartGame"
+        @initGame="initGame"
+        :formattedTime="formattedTime"
+      />
+    </Teleport>
+    <Teleport to="body">
+      <ErrorModal
+        :show="showModal && hasUserLost"
+        @close="showModal = false"
+        @restartGame="restartGame"
+        @initGame="initGame"
         :formattedTime="formattedTime"
       />
     </Teleport>
@@ -35,14 +51,17 @@ import { checkCellIsDisabled, getRegionStartAndEnd } from "./utils/index.js";
 import CONSTANTS from "./utils/constants.js";
 import Board from "@components/Board/Board.vue";
 import GameBar from "@components/GameBar/GameBar.vue";
-import Modal from "@components/Modal.vue";
+import CongratsModal from "@components/Modals/CongratsModal.vue";
+import ErrorModal from "@components/Modals/ErrorModal.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
+const NUMS_TO_DELETE = 1;
 
 export default {
   components: {
     Board,
+    CongratsModal,
+    ErrorModal,
     GameBar,
-    Modal,
     UserControls,
   },
 
@@ -56,6 +75,7 @@ export default {
       initialBoard: [],
       gameBoard: [],
       maxToFill: 0,
+      numsToDelete: NUMS_TO_DELETE,
       solvedBoard: [],
       showModal: false,
       time: 0,
@@ -73,6 +93,10 @@ export default {
       });
     },
 
+    hasUserLost() {
+      return this.errorsCount === this.MAX_ERRORS;
+    },
+
     formattedTime() {
       const m = Math.floor((this.time % 3600) / 60);
       const s = Math.floor((this.time % 3600) % 60);
@@ -87,13 +111,24 @@ export default {
 
   methods: {
     initGame() {
+      this.restartGameConfig();
+      this.initSolvedBoard();
+      this.setGameBoard();
+    },
+
+    restartGame() {
+      this.restartGameConfig();
+      this.gameBoard = cloneDeep(this.initialBoard);
+    },
+
+    restartGameConfig() {
       this.errorsCount = 0;
       this.activeCell = {
         row: null,
         col: null,
       };
-      this.initSolvedBoard();
-      this.setGameBoard();
+      this.numsToDelete = NUMS_TO_DELETE;
+      this.time = 0;
     },
 
     initSolvedBoard() {
@@ -130,17 +165,15 @@ export default {
     setGameBoard() {
       const newBoard = cloneDeep(this.solvedBoard);
 
-      let numsToDelete = 1;
-
       for (let rowIndex = 0; rowIndex < newBoard.length; rowIndex++) {
         const row = newBoard[rowIndex];
 
         for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
           const randomBoolean = Math.random() >= 0.5;
 
-          if (randomBoolean && numsToDelete) {
+          if (randomBoolean && this.numsToDelete) {
             newBoard[rowIndex][columnIndex] = 0;
-            numsToDelete--;
+            this.numsToDelete--;
           }
         }
       }
@@ -216,10 +249,11 @@ export default {
     },
 
     addErrorCount() {
+      console.log("ADD ERROR COUNT");
       this.errorsCount = this.errorsCount + 1;
     },
+
     incrementTime() {
-      console.log("times");
       this.time = this.time + 1;
     },
   },
@@ -234,11 +268,16 @@ export default {
         this.showModal = true;
       }
     },
+
+    hasUserLost(hasLost) {
+      console.log(hasLost);
+      if (hasLost) this.showModal = true;
+    },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 main {
   display: flex;
   gap: 1rem;

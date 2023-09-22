@@ -221,6 +221,9 @@ export default {
     },
 
     handleInput({ num, row, col }) {
+      //Prevent user input when the modal is open
+      if (this.showModal) return false;
+
       const isDisabled = checkCellIsDisabled({
         initialBoard: this.initialBoard,
         row,
@@ -245,11 +248,12 @@ export default {
     },
 
     handleSetActiveCell({ row, col, num }) {
+      if (this.showModal) return false;
+
       this.activeCell = { row, col, num: Number(num) };
     },
 
     addErrorCount() {
-      console.log("ADD ERROR COUNT");
       this.errorsCount = this.errorsCount + 1;
     },
 
@@ -270,7 +274,6 @@ export default {
     },
 
     hasUserLost(hasLost) {
-      console.log(hasLost);
       if (hasLost) this.showModal = true;
     },
   },

@@ -36,7 +36,7 @@ export default {
       activeCell: {},
       errorsCount: 0,
       initialBoard: [],
-      GameBoard: [],
+      gameBoard: [],
       maxToFill: 0,
       solvedBoard: [],
       MAX_ERRORS: CONSTANTS.MAX_ERRORS,
@@ -46,12 +46,11 @@ export default {
 
   computed: {
     gameIsSolved() {
-      return this.solvedBoard.every((solvedRow, rowIndex) =>
-        solvedRow.every(
-          (solvedCell, solvedCellIndex) =>
-            solvedCell === this.gameBoard[rowIndex][solvedCellIndex]
-        )
-      );
+      return this.solvedBoard.every((solvedRow, rowIndex) => {
+        return solvedRow.every((solvedCell, solvedCellIndex) => {
+          return solvedCell === this.gameBoard[rowIndex][solvedCellIndex];
+        });
+      });
     },
   },
 
@@ -61,6 +60,7 @@ export default {
       this.initSolvedBoard();
       this.setGameBoard();
     },
+
     initSolvedBoard() {
       do {
         const newBoard = new Array(this.BOARD_SIZE)
@@ -157,7 +157,7 @@ export default {
     },
 
     handleClearCell({ row, col }) {
-      this.gameBoard[row][col] = 0;
+      this.handleInput({ row, col, num: 0 });
     },
 
     handleSetActiveCell({ row, col, num }) {
@@ -165,7 +165,6 @@ export default {
     },
 
     addErrorCount() {
-      console.log("E");
       this.errorsCount = this.errorsCount + 1;
     },
   },
@@ -177,7 +176,11 @@ export default {
   watch: {
     gameIsSolved(isSolved) {
       if (isSolved) {
-        alert("Te amo mi amor ❣️");
+        this.$nextTick(() => {
+          setTimeout(() => {
+            alert("Congratulations!");
+          }, 0);
+        });
       }
     },
   },

@@ -60,6 +60,10 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.2s ease-in;
 
+  @media screen and (max-width: 768px) {
+    width: 85%;
+  }
+
   .modal-body {
     display: flex;
     flex-direction: column;
@@ -87,7 +91,6 @@ export default {
           &:active {
             background: #882f1f;
           }
-          
         }
         &#new-game {
           background: #38b77d;

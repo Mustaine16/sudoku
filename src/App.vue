@@ -1,7 +1,13 @@
 <template>
   <main>
-    <!-- <GameBar /> -->
-    <span>ERRORS: {{ errorsCount }} / {{ MAX_ERRORS }}</span>
+    <GameBar
+      :errorsCount="errorsCount"
+      :formattedTime="formattedTime"
+      :isGameSolved="isGameSolved"
+      :MAX_ERRORS="MAX_ERRORS"
+      :time="time"
+      @incrementTime="incrementTime"
+    />
     <Board
       :gameBoard="gameBoard"
       :initialBoard="initialBoard"
@@ -13,6 +19,13 @@
       @cellError="addErrorCount"
     />
     <UserControls @initGame="initGame" @numPadInput="handleNumPadInput" />
+    <Teleport to="body">
+      <Modal
+        :show="showModal"
+        @close="showModal = false"
+        :formattedTime="formattedTime"
+      />
+    </Teleport>
   </main>
 </template>
 
@@ -21,13 +34,15 @@ import { cloneDeep } from "lodash";
 import { checkCellIsDisabled, getRegionStartAndEnd } from "./utils/index.js";
 import CONSTANTS from "./utils/constants.js";
 import Board from "@components/Board/Board.vue";
-import UserControls from "@components/UserControls/UserControls.vue";
 import GameBar from "@components/GameBar/GameBar.vue";
+import Modal from "@components/Modal.vue";
+import UserControls from "@components/UserControls/UserControls.vue";
 
 export default {
   components: {
     Board,
     GameBar,
+    Modal,
     UserControls,
   },
 
@@ -42,18 +57,31 @@ export default {
       gameBoard: [],
       maxToFill: 0,
       solvedBoard: [],
+      showModal: false,
+      time: 0,
       MAX_ERRORS: CONSTANTS.MAX_ERRORS,
       BOARD_SIZE: CONSTANTS.BOARD_SIZE,
     };
   },
 
   computed: {
-    gameIsSolved() {
+    isGameSolved() {
       return this.solvedBoard.every((solvedRow, rowIndex) => {
         return solvedRow.every((solvedCell, solvedCellIndex) => {
           return solvedCell === this.gameBoard[rowIndex][solvedCellIndex];
         });
       });
+    },
+
+    formattedTime() {
+      const m = Math.floor((this.time % 3600) / 60);
+      const s = Math.floor((this.time % 3600) % 60);
+
+      const mDisplay =
+        m > 0 ? `${m.toString().length > 1 ? `${m}` : `${0}${m}`}` : "00";
+      const sDisplay =
+        s > 0 ? `${s.toString().length > 1 ? `${s}` : `${0}${s}`}` : "00";
+      return `${mDisplay}:${sDisplay}`;
     },
   },
 
@@ -102,7 +130,7 @@ export default {
     setGameBoard() {
       const newBoard = cloneDeep(this.solvedBoard);
 
-      let numsToDelete = 60;
+      let numsToDelete = 1;
 
       for (let rowIndex = 0; rowIndex < newBoard.length; rowIndex++) {
         const row = newBoard[rowIndex];
@@ -190,6 +218,10 @@ export default {
     addErrorCount() {
       this.errorsCount = this.errorsCount + 1;
     },
+    incrementTime() {
+      console.log("times");
+      this.time = this.time + 1;
+    },
   },
 
   mounted() {
@@ -197,13 +229,9 @@ export default {
   },
 
   watch: {
-    gameIsSolved(isSolved) {
+    isGameSolved(isSolved) {
       if (isSolved) {
-        this.$nextTick(() => {
-          setTimeout(() => {
-            alert("Congratulations!");
-          }, 0);
-        });
+        this.showModal = true;
       }
     },
   },

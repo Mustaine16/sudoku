@@ -89,6 +89,11 @@ export default {
     },
 
     isInRegion() {
+
+      if (this.activeCell.row === null || this.activeCell.col === null) {
+        return false;
+      }
+
       const { rowStart, rowEnd, colStart, colEnd } = getRegionStartAndEnd({
         row: this.activeCell.row,
         col: this.activeCell.col,

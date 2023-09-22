@@ -60,6 +60,10 @@ export default {
   methods: {
     initGame() {
       this.errorsCount = 0;
+      this.activeCell = {
+        row: null,
+        col: null,
+      };
       this.initSolvedBoard();
       this.setGameBoard();
     },

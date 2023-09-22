@@ -5,6 +5,7 @@
         v-for="(n, index) in numbers"
         :key="index + '-nb'"
         class="number-button"
+        @click="$emit('numPadInput', n)"
       >
         {{ n }}
       </button>

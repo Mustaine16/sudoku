@@ -5,3 +5,7 @@ export function getRegionStartAndEnd({ row, col }) {
   const colEnd = colStart + 2;
   return { rowStart, rowEnd, colStart, colEnd };
 }
+
+export function checkCellIsDisabled({ initialBoard, row, col }) {
+  return initialBoard?.[row]?.[col];
+}

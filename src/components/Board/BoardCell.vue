@@ -16,7 +16,10 @@
 </template>
 
 <script>
-import { getRegionStartAndEnd } from "../../utils/index.js";
+import {
+  checkCellIsDisabled,
+  getRegionStartAndEnd,
+} from "../../utils/index.js";
 
 export default {
   name: "BoardCell",
@@ -78,7 +81,11 @@ export default {
     },
 
     isDisabled() {
-      return !!this.initialBoard?.[this.rowIndex]?.[this.columnIndex];
+      return checkCellIsDisabled({
+        initialBoard: this.initialBoard,
+        row: this.rowIndex,
+        col: this.columnIndex,
+      });
     },
 
     isInRegion() {

@@ -12,13 +12,13 @@
       @setActiveCell="handleSetActiveCell"
       @cellError="addErrorCount"
     />
-    <UserControls @initGame="initGame" />
+    <UserControls @initGame="initGame" @numPadInput="handleNumPadInput" />
   </main>
 </template>
 
 <script>
 import { cloneDeep } from "lodash";
-import { getRegionStartAndEnd } from "./utils/index.js";
+import { checkCellIsDisabled, getRegionStartAndEnd } from "./utils/index.js";
 import CONSTANTS from "./utils/constants.js";
 import Board from "@components/Board/Board.vue";
 import UserControls from "@components/UserControls/UserControls.vue";
@@ -33,7 +33,10 @@ export default {
 
   data() {
     return {
-      activeCell: {},
+      activeCell: {
+        row: null,
+        column: null,
+      },
       errorsCount: 0,
       initialBoard: [],
       gameBoard: [],
@@ -153,7 +156,23 @@ export default {
     },
 
     handleInput({ num, row, col }) {
-      this.gameBoard[row][col] = Number(num);
+      const isDisabled = checkCellIsDisabled({
+        initialBoard: this.initialBoard,
+        row,
+        col,
+      });
+
+      if (!isDisabled) this.gameBoard[row][col] = Number(num);
+    },
+
+    handleNumPadInput(num) {
+      if (this.activeCell.row !== null && this.activeCell.column !== null) {
+        this.handleInput({
+          row: this.activeCell.row,
+          col: this.activeCell.col,
+          num,
+        });
+      }
     },
 
     handleClearCell({ row, col }) {

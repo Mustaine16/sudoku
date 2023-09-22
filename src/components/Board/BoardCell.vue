@@ -89,7 +89,6 @@ export default {
     },
 
     isInRegion() {
-
       if (this.activeCell.row === null || this.activeCell.col === null) {
         return false;
       }
@@ -142,14 +141,6 @@ export default {
     handleClear() {
       this.$emit("clearCell");
       this.$emit("setActiveCell");
-    },
-  },
-
-  watch: {
-    isWrong(isWrong) {
-      if (isWrong) {
-        this.$emit("cellError");
-      }
     },
   },
 };

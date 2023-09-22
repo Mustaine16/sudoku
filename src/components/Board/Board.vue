@@ -60,8 +60,19 @@ export default {
   display: grid;
   grid-template-rows: repeat(9, 1fr);
   grid-template-columns: repeat(9, 1fr);
-  place-items: center;
+  justify-content: center;
   width: 500px;
   height: 500px;
+
+  @media screen and (max-width: 1024px) {
+    grid-template-rows: repeat(9, 4.5rem);
+    grid-template-columns: repeat(9, 4.5rem);
+    height: 100%;
+    width: 100%;
+  }
+  @media screen and (max-width: 768px) {
+    grid-template-rows: repeat(9, 11%);
+    grid-template-columns: repeat(9, 11%);
+  }
 }
 </style>

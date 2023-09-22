@@ -33,6 +33,11 @@ export default {
 #user-controls {
   display: flex;
   flex-direction: column;
+
+  @media screen and (max-width: 1024px) {
+    width: 100%;
+  }
+
   #number-buttons-container {
     display: grid;
     grid-template-columns: repeat(3, 5rem);
@@ -56,6 +61,9 @@ export default {
       align-items: center;
       justify-content: center;
       transition: background-color 0.2s;
+      padding: 0;
+      height: 5rem;
+      width: 5rem;
 
       &:hover {
         background: #070707;
@@ -65,6 +73,28 @@ export default {
       &:active {
         background: #d6d6d6;
         color: black;
+      }
+    }
+
+    @media screen and (max-width: 1024px) {
+      display: flex;
+      justify-content: center;
+      button {
+        height: 4rem;
+        width: 4rem;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      button {
+        height: 3rem;
+        width: 3rem;
+      }
+    }
+    @media screen and (max-width: 425px) {
+      button {
+        height: 2.25rem;
+        width: 2.25rem;
       }
     }
   }
@@ -82,6 +112,10 @@ export default {
     &:active {
       background: #5dd39e;
       color: white;
+    }
+
+    @media screen and (max-width: 1024px) {
+      display: none;
     }
   }
 }

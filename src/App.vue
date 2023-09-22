@@ -284,5 +284,18 @@ export default {
 main {
   display: flex;
   gap: 1rem;
+
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #game-section {
+    @media screen and (max-width: 1024px) {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }
 </style>

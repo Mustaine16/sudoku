@@ -129,6 +129,7 @@ export default {
       };
       this.numsToDelete = NUMS_TO_DELETE;
       this.time = 0;
+      this.showModal = false;
     },
 
     initSolvedBoard() {

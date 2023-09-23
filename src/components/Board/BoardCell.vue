@@ -9,6 +9,7 @@
         }
       "
       @keyup.delete="handleClear"
+      :readonly="isMobile"
       type="number"
     />
     <span>{{ num ? num : "" }}</span>
@@ -16,6 +17,7 @@
 </template>
 
 <script>
+import mobile from "is-mobile";
 import {
   checkCellIsDisabled,
   getRegionStartAndEnd,
@@ -23,6 +25,11 @@ import {
 
 export default {
   name: "BoardCell",
+  data() {
+    return {
+      isMobile: mobile(),
+    };
+  },
   props: {
     activeCell: { type: Object },
     gameBoard: { type: Array },

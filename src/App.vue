@@ -231,7 +231,10 @@ export default {
         col,
       });
 
-      if (!isDisabled) this.gameBoard[row][col] = Number(num);
+      if (!isDisabled) {
+        this.gameBoard[row][col] = Number(num);
+        this.handleSetActiveCell({ row, col, num });
+      }
     },
 
     handleNumPadInput(num) {

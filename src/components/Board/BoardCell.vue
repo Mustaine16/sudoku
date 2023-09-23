@@ -136,10 +136,6 @@ export default {
           row: this.rowIndex,
           col: this.columnIndex,
         });
-
-        this.$nextTick(() => {
-          this.$emit("setActiveCell", num);
-        });
       }
     },
     handleClear() {

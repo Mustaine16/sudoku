@@ -21,7 +21,11 @@
         @cellError="addErrorCount"
       />
     </section>
-    <UserControls @initGame="initGame" @numPadInput="handleNumPadInput" />
+    <UserControls
+      :gameBoard="gameBoard"
+      @initGame="initGame"
+      @numPadInput="handleNumPadInput"
+    />
 
     <Teleport to="body">
       <CongratsModal

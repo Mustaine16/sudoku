@@ -5,6 +5,8 @@
         v-for="(n, index) in numbers"
         :key="index + '-nb'"
         class="number-button"
+        :class="{ disabled: isCompleted(n) }"
+        :disabled="isCompleted(n)"
         @click="$emit('numPadInput', n)"
       >
         {{ n }}
@@ -21,10 +23,27 @@ export default {
   components: {
     NumberButton,
   },
+  props: {
+    gameBoard: Array,
+  },
   data() {
     return {
       numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     };
+  },
+  methods: {
+    isCompleted(n) {
+      let count = 0;
+      this.gameBoard.forEach((row) => {
+        row.forEach((cell) => {
+          if (cell === n) {
+            count++;
+          }
+        });
+      });
+
+      return count === 9;
+    },
   },
 };
 </script>
@@ -73,6 +92,12 @@ export default {
       &:active {
         background: #d6d6d6;
         color: black;
+      }
+
+      &:disabled {
+        background: none;
+        cursor: not-allowed;
+        pointer-events: none;
       }
     }
 

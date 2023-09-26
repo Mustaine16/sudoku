@@ -20,12 +20,9 @@ export default {
   },
 
   methods: {
-    toggleTimer() {
-      if (!this.isGameSolved) {
-        clearInterval(this.interval);
-      } else {
-        this.interval = setInterval(this.incrementTime, 1000);
-      }
+    setTimer() {
+      clearInterval(this.interval);
+      this.interval = setInterval(this.incrementTime, 1000);
     },
     incrementTime() {
       this.$emit("incrementTime");
@@ -33,7 +30,7 @@ export default {
   },
 
   mounted() {
-    this.toggleTimer();
+    this.setTimer();
   },
 
   watch: {
@@ -42,7 +39,20 @@ export default {
         clearInterval(this.interval);
       } else if (!this.interval) {
         //Restart the game
-        this.toggleTimer();
+        this.setTimer();
+      }
+    },
+
+    time(newTime, prevTime) {
+      //When the user restarts the game
+      if (newTime === 0 && prevTime > 0) {
+        this.setTimer();
+      }
+    },
+
+    hasUserLost(hasLost) {
+      if (hasLost) {
+        clearInterval(this.interval);
       }
     },
   },
